@@ -1,0 +1,4 @@
+/build/
+/vstd-gyp.xcodeproj/
+/vstd.xcodeproj/
+.DS_Store
