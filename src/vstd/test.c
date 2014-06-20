@@ -66,6 +66,10 @@ static long get_max_memory_usage() {
 }
 
 static void test_runner(struct vstd_test *test) {
+    if (test->run_count == 0) {
+        return;
+    }
+
     printf("Running test `%s':", test->name);
 
     /* Run test once to reach max memory usage */
@@ -73,7 +77,7 @@ static void test_runner(struct vstd_test *test) {
 
     long memory_limit = get_max_memory_usage() * 1.2;
 
-    for (int i = 0; i < test->run_count; i++) {
+    for (int i = 1; i < test->run_count; i++) {
         test->function();
         assert(get_max_memory_usage() <= memory_limit);
     }
