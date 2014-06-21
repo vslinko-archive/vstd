@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <unistd.h>
 #include "test.h"
 
@@ -65,12 +66,12 @@ static long get_max_memory_usage() {
     return max_memory_usage;
 }
 
-static void test_runner(struct vstd_test *test) {
+static void unit_test_runner(struct vstd_test *test) {
     if (test->run_count == 0) {
         return;
     }
 
-    printf("Running test `%s':", test->name);
+    printf("Running unit test `%s':", test->name);
 
     /* Run test once to reach max memory usage */
     test->function();
@@ -85,8 +86,41 @@ static void test_runner(struct vstd_test *test) {
     printf(" DONE\n");
 }
 
+static void benchmark_test_runner(struct vstd_test *test) {
+    if (test->max_time == 0) {
+        return;
+    }
+
+    printf("Running benchmark test `%s':", test->name);
+
+    clock_t start_time = clock();
+
+    test->function();
+
+    double seconds_spend = ((double) (clock() - start_time)) / CLOCKS_PER_SEC;
+
+    if (seconds_spend > test->max_time) {
+        printf(" FAILED (%fs > %fs)\n", seconds_spend, test->max_time);
+        abort();
+    } else {
+        printf(" DONE (%fs)\n", seconds_spend);
+    }
+}
+
+static void test_runner(struct vstd_test *test) {
+    switch (test->type) {
+        case VSTD_TEST_UNIT:
+            unit_test_runner(test);
+            break;
+
+        case VSTD_TEST_BENCHMARK:
+            benchmark_test_runner(test);
+            break;
+    }
+}
+
 static void memory_dump_test_runner(struct vstd_test *test) {
-    printf("Running test `%s':\n", test->name);
+    printf("Running memory test `%s':\n", test->name);
 
     /* Run test once to reach max memory usage */
     test->function();

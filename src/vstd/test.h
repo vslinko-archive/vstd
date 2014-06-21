@@ -37,18 +37,33 @@
         block \
         vstd_teardown(); \
     } \
-    struct vstd_test vstd_test_##name = {#name, vstd_test_function_##name, run_count}; \
+    struct vstd_test vstd_test_##name = {VSTD_TEST_UNIT, #name, vstd_test_function_##name, run_count, 0}; \
     void vstd_test_##name##_register(void) __attribute__((constructor)); \
     void vstd_test_##name##_register(void) { \
         vstd_test_register(&vstd_test_##name); \
     }
 
+#define vstd_test_benchmark(name, max_time, block) \
+    void vstd_test_function_##name() block \
+    struct vstd_test vstd_test_##name = {VSTD_TEST_BENCHMARK, #name, vstd_test_function_##name, 0, max_time}; \
+    void vstd_test_##name##_register(void) __attribute__((constructor)); \
+    void vstd_test_##name##_register(void) { \
+        vstd_test_register(&vstd_test_##name); \
+    }
+
+enum vstd_test_type {
+    VSTD_TEST_UNIT,
+    VSTD_TEST_BENCHMARK
+};
+
 typedef void vstd_test_function(void);
 
 struct vstd_test {
+    enum vstd_test_type type;
     char *name;
     vstd_test_function *function;
     int run_count;
+    double max_time;
 };
 
 void vstd_test_register(struct vstd_test *test);

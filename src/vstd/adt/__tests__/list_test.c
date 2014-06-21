@@ -69,3 +69,13 @@ vstd_test_unit(vstd_adt_list_push, 10000, {
     assert(list->first->next->next == list->last);
     assert(list->length == 3);
 })
+
+vstd_test_benchmark(vstd_atd_list_push_benchmark, 0.15, {
+    struct adt_list *list = adt_list_alloc();
+
+    for (int i = 0; i < 1000000; i++) {
+        adt_list_push(list, "a");
+    }
+
+    adt_list_free(list);
+})
