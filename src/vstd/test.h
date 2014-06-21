@@ -31,7 +31,7 @@
 #define __assert(e, file, line) \
     ((void) printf(" FAILED\n\t%s:%u: %s\n", file, line, e), abort())
 
-#define vstd_test_definition(name, run_count, block) \
+#define vstd_test_unit(name, run_count, block) \
     void vstd_test_function_##name() { \
         vstd_setup(); \
         block \

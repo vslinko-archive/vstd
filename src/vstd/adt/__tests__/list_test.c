@@ -32,14 +32,14 @@ static void vstd_teardown() {
     adt_list_free(list);
 }
 
-vstd_test_definition(vstd_adt_list_alloc, 10000, {
+vstd_test_unit(vstd_adt_list_alloc, 10000, {
     assert(list);
     assert(list->first == NULL);
     assert(list->last == NULL);
     assert(list->length == 0);
 })
 
-vstd_test_definition(vstd_adt_list_push, 10000, {
+vstd_test_unit(vstd_adt_list_push, 10000, {
     static char *first = "first";
     static char *second = "second";
     static char *third = "third";

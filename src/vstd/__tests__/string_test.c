@@ -35,24 +35,24 @@ static void vstd_teardown() {
     vstd_string_free(string);
 }
 
-vstd_test_definition(vstd_string_alloc, 10000, {
+vstd_test_unit(vstd_string_alloc, 10000, {
     assert(string);
     assert(string[0] == 0);
     assert(string[1] == 0);
     assert(string[2] == 0);
 })
 
-vstd_test_definition(vstd_string_length, 10000, {
+vstd_test_unit(vstd_string_length, 10000, {
     assert(vstd_string_length(string) == 0);
     vstd_string_append_character(string, 1);
     assert(vstd_string_length(string) == 1);
 })
 
-vstd_test_definition(vstd_string_used_memory, 10000, {
+vstd_test_unit(vstd_string_used_memory, 10000, {
     assert_string_memory_size(3);
 })
 
-vstd_test_definition(vstd_string_set, 10000, {
+vstd_test_unit(vstd_string_set, 10000, {
     vstd_string_set(string, "a");
     assert(vstd_string_length(string) == 1);
     assert_string_memory_size(3);
@@ -79,7 +79,7 @@ vstd_test_definition(vstd_string_set, 10000, {
     assert(string[4] == 0);
 })
 
-vstd_test_definition(vstd_string_append_character, 10000, {
+vstd_test_unit(vstd_string_append_character, 10000, {
     vstd_string_append_character(string, 1);
     assert(vstd_string_length(string) == 1);
     assert_string_memory_size(3);
