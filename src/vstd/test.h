@@ -51,9 +51,18 @@
         vstd_test_register(&vstd_test_##name); \
     }
 
+#define vstd_test_abort(name, block) \
+    void vstd_test_function_##name() block \
+    struct vstd_test vstd_test_##name = {VSTD_TEST_ABORT, #name, vstd_test_function_##name, 0, 0}; \
+    void vstd_test_##name##_register(void) __attribute__((constructor)); \
+    void vstd_test_##name##_register(void) { \
+        vstd_test_register(&vstd_test_##name); \
+    }
+
 enum vstd_test_type {
     VSTD_TEST_UNIT,
-    VSTD_TEST_BENCHMARK
+    VSTD_TEST_BENCHMARK,
+    VSTD_TEST_ABORT
 };
 
 typedef void vstd_test_function(void);

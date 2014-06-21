@@ -20,6 +20,8 @@
  */
 
 #include <sys/resource.h>
+#include <setjmp.h>
+#include <signal.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -40,6 +42,10 @@ static struct test_runner_options test_runner_options = {
 
 static int tests_length = 0;
 static struct vstd_test **tests;
+
+static jmp_buf env;
+static bool catch_abort = false;
+static int stderr_copy = -1;
 
 static void parse_test_runner_arguments(int argc, char **argv) {
     char key = 0;
@@ -64,6 +70,12 @@ static long get_max_memory_usage() {
     max_memory_usage = memory->ru_maxrss;
     free(memory);
     return max_memory_usage;
+}
+
+static void abort_handler(int signo) {
+    if (signo == SIGABRT && catch_abort) {
+        longjmp(env, signo);
+    }
 }
 
 static void unit_test_runner(struct vstd_test *test) {
@@ -107,6 +119,35 @@ static void benchmark_test_runner(struct vstd_test *test) {
     }
 }
 
+static void abort_test_runner(struct vstd_test *test) {
+    printf("Running abort test `%s':", test->name);
+
+    if (stderr_copy == -1) {
+        stderr_copy = dup(2);
+        close(2);
+    }
+
+    int jump_value = setjmp(env);
+
+    if (jump_value == 0) {
+        catch_abort = true;
+        test->function();
+    }
+
+    catch_abort = false;
+
+    dup2(stderr_copy, 2);
+    close(stderr_copy);
+    stderr_copy = -1;
+
+    if (jump_value == SIGABRT) {
+        printf(" DONE\n");
+    } else {
+        printf(" FAILED\n");
+        abort();
+    }
+}
+
 static void test_runner(struct vstd_test *test) {
     switch (test->type) {
         case VSTD_TEST_UNIT:
@@ -115,6 +156,10 @@ static void test_runner(struct vstd_test *test) {
 
         case VSTD_TEST_BENCHMARK:
             benchmark_test_runner(test);
+            break;
+
+        case VSTD_TEST_ABORT:
+            abort_test_runner(test);
             break;
     }
 }
@@ -148,6 +193,8 @@ void vstd_test_register(struct vstd_test *test) {
 }
 
 void vstd_test_runner(int argc, char **argv) {
+    signal(SIGABRT, abort_handler);
+
     parse_test_runner_arguments(argc, argv);
 
     struct vstd_test *test = NULL;
