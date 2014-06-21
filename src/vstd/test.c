@@ -25,7 +25,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include "vstd/test.h"
+#include "test.h"
 
 struct test_runner_options {
     char *test_name;
