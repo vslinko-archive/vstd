@@ -71,7 +71,7 @@ vstd_test_unit(vstd_list_push, 10000, {
     assert(list->length == 3);
 })
 
-vstd_test_benchmark(vstd_list_push_benchmark, 0.15, {
+vstd_test_benchmark(vstd_list_push_benchmark, 0.15, {}, {
     struct vstd_list* list = vstd_list_alloc();
 
     for (int i = 0; i < 1000000; i++) {
@@ -79,4 +79,4 @@ vstd_test_benchmark(vstd_list_push_benchmark, 0.15, {
     }
 
     vstd_list_free(list);
-})
+}, {})

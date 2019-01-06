@@ -39,16 +39,26 @@
         vstd_teardown(); \
     } \
     struct vstd_test vstd_test_##name = { \
-        VSTD_TEST_UNIT, #name, vstd_test_function_##name,  run_count, 0 \
+        VSTD_TEST_UNIT, #name, NULL, vstd_test_function_##name, NULL, run_count, 0 \
     }; \
     void vstd_test_##name##_register(void) __attribute__((constructor)); \
     void vstd_test_##name##_register(void) { vstd_test_register(&vstd_test_##name); }
 
-#define vstd_test_benchmark(name, max_time, block) \
+#define vstd_test_benchmark(name, max_time, setup_block, block, teardown_block) \
+    void vstd_test_function_setup_##name(void); \
+    void vstd_test_function_setup_##name(void) setup_block \
     void vstd_test_function_##name(void); \
     void vstd_test_function_##name() block \
+    void vstd_test_function_teardown_##name(void); \
+    void vstd_test_function_teardown_##name() teardown_block \
     struct vstd_test vstd_test_##name = { \
-        VSTD_TEST_BENCHMARK, #name, vstd_test_function_##name, 0, max_time \
+        VSTD_TEST_BENCHMARK, \
+        #name, \
+        vstd_test_function_setup_##name, \
+        vstd_test_function_##name, \
+        vstd_test_function_teardown_##name, \
+        0, \
+        max_time \
     }; \
     void vstd_test_##name##_register(void) __attribute__((constructor)); \
     void vstd_test_##name##_register(void) { vstd_test_register(&vstd_test_##name); }
@@ -57,7 +67,7 @@
     void vstd_test_function_##name(void); \
     void vstd_test_function_##name() block \
     struct vstd_test vstd_test_##name = { \
-        VSTD_TEST_ABORT, #name, vstd_test_function_##name, 0, 0 \
+        VSTD_TEST_ABORT, #name, NULL, vstd_test_function_##name, NULL, 0, 0 \
     }; \
     void vstd_test_##name##_register(void) __attribute__((constructor)); \
     void vstd_test_##name##_register(void) { vstd_test_register(&vstd_test_##name); }
@@ -69,7 +79,9 @@ typedef void vstd_test_function(void);
 struct vstd_test {
     enum vstd_test_type type;
     char* name;
+    vstd_test_function* setup;
     vstd_test_function* function;
+    vstd_test_function* teardown;
     int run_count;
     double max_time;
 };

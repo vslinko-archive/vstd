@@ -106,11 +106,15 @@ static void benchmark_test_runner(struct vstd_test* test) {
 
     printf("Running benchmark test `%s':", test->name);
 
+    test->setup();
+
     clock_t start_time = clock();
 
     test->function();
 
     double seconds_spend = ((double) (clock() - start_time)) / CLOCKS_PER_SEC;
+
+    test->teardown();
 
     if (seconds_spend > test->max_time) {
         printf(" FAILED (%fs > %fs)\n", seconds_spend, test->max_time);
