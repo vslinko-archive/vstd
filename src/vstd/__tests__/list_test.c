@@ -19,39 +19,39 @@
  * THE SOFTWARE.
  */
 
-#include <vstd/adt/list.h>
+#include <vstd/list.h>
 #include <vstd/test.h>
 
-struct adt_list* list;
+struct vstd_list* list;
 
 static void vstd_setup() {
-    list = adt_list_alloc();
+    list = vstd_list_alloc();
 }
 
 static void vstd_teardown() {
-    adt_list_free(list);
+    vstd_list_free(list);
 }
 
-vstd_test_unit(vstd_adt_list_alloc, 10000, {
+vstd_test_unit(vstd_list_alloc, 10000, {
     assert(list);
     assert(list->first == NULL);
     assert(list->last == NULL);
     assert(list->length == 0);
 })
 
-vstd_test_unit(vstd_adt_list_push, 10000, {
+vstd_test_unit(vstd_list_push, 10000, {
     static char* first = "first";
     static char* second = "second";
     static char* third = "third";
 
-    adt_list_push(list, first);
+    vstd_list_push(list, first);
     assert(list->first != NULL);
     assert(list->first->value == first);
     assert(list->first->next == NULL);
     assert(list->last == list->first);
     assert(list->length == 1);
 
-    adt_list_push(list, second);
+    vstd_list_push(list, second);
     assert(list->first != NULL);
     assert(list->first->value == first);
     assert(list->last != NULL);
@@ -60,7 +60,7 @@ vstd_test_unit(vstd_adt_list_push, 10000, {
     assert(list->first->next == list->last);
     assert(list->length == 2);
 
-    adt_list_push(list, third);
+    vstd_list_push(list, third);
     assert(list->first != NULL);
     assert(list->first->value == first);
     assert(list->last != NULL);
@@ -70,12 +70,12 @@ vstd_test_unit(vstd_adt_list_push, 10000, {
     assert(list->length == 3);
 })
 
-vstd_test_benchmark(vstd_atd_list_push_benchmark, 0.15, {
-    struct adt_list* list = adt_list_alloc();
+vstd_test_benchmark(vstd_list_push_benchmark, 0.15, {
+    struct vstd_list* list = vstd_list_alloc();
 
     for (int i = 0; i < 1000000; i++) {
-        adt_list_push(list, "a");
+        vstd_list_push(list, "a");
     }
 
-    adt_list_free(list);
+    vstd_list_free(list);
 })

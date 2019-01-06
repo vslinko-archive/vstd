@@ -19,49 +19,24 @@
  * THE SOFTWARE.
  */
 
-#include "list.h"
+#ifndef VSTD_LIST_H
+#define VSTD_LIST_H
 
-#include <assert.h>
-#include <stdlib.h>
+struct vstd_list_item {
+    void* value;
+    struct vstd_list_item* next;
+};
 
-struct adt_list* adt_list_alloc() {
-    struct adt_list* list = malloc(sizeof(struct adt_list));
-    assert(list);
-    list->first = NULL;
-    list->last = NULL;
-    list->length = 0;
-    return list;
-}
+struct vstd_list {
+    struct vstd_list_item* first;
+    struct vstd_list_item* last;
+    unsigned int length;
+};
 
-struct adt_list_item* adt_list_push(struct adt_list* list, void* value) {
-    struct adt_list_item* item = malloc(sizeof(struct adt_list_item));
-    assert(item);
-    item->value = value;
-    item->next = NULL;
+struct vstd_list* vstd_list_alloc(void);
 
-    if (list->first == NULL) {
-        list->first = item;
-        list->last = item;
-    } else {
-        list->last->next = item;
-        list->last = item;
-    }
+struct vstd_list_item* vstd_list_push(struct vstd_list* list, void* value);
 
-    list->length++;
+void vstd_list_free(struct vstd_list* list);
 
-    return item;
-}
-
-void adt_list_free(struct adt_list* list) {
-    if (list->first != NULL) {
-        struct adt_list_item* item = list->first;
-        struct adt_list_item* next = NULL;
-        do {
-            next = item->next;
-            free(item);
-            item = next;
-        } while (next != NULL);
-    }
-
-    free(list);
-}
+#endif

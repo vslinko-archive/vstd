@@ -25,16 +25,16 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-static struct object_pool_memory_allocation* create_object_pool_memory_allocation(
-  struct object_pool* pool,
+static struct vstd_object_pool_memory_allocation* vstd_object_pool_memory_alloc(
+  struct vstd_object_pool* pool,
   unsigned long size
 );
-static struct object_pool_memory_allocation* create_object_pool_memory_allocation(
-  struct object_pool* pool,
+static struct vstd_object_pool_memory_allocation* vstd_object_pool_memory_alloc(
+  struct vstd_object_pool* pool,
   unsigned long size
 ) {
-    struct object_pool_memory_allocation* allocation = malloc(
-      sizeof(struct object_pool_memory_allocation)
+    struct vstd_object_pool_memory_allocation* allocation = malloc(
+      sizeof(struct vstd_object_pool_memory_allocation)
     );
     allocation->size = size;
     allocation->items = malloc(pool->row_size * allocation->size);
@@ -49,12 +49,12 @@ static struct object_pool_memory_allocation* create_object_pool_memory_allocatio
     return allocation;
 }
 
-struct object_pool* create_object_pool(
+struct vstd_object_pool* vstd_object_pool_alloc(
   unsigned long initial_pool_size,
   size_t item_size,
-  object_pool_reset_fn* reset_fn
+  vstd_object_pool_reset_fn* reset_fn
 ) {
-    struct object_pool* pool = malloc(sizeof(struct object_pool));
+    struct vstd_object_pool* pool = malloc(sizeof(struct vstd_object_pool));
     pool->size = initial_pool_size;
     pool->item_size = item_size;
     pool->row_size = pool->item_size + sizeof(char);
@@ -64,20 +64,20 @@ struct object_pool* create_object_pool(
 
     pool->allocations_size = 1;
     pool->allocations = malloc(sizeof(struct object_pool_memory_allocation*));
-    pool->allocations[0] = create_object_pool_memory_allocation(pool, pool->size);
+    pool->allocations[0] = vstd_object_pool_memory_alloc(pool, pool->size);
 
     return pool;
 }
 
-void* get_object_from_pool(struct object_pool* pool) {
-    struct object_pool_memory_allocation* allocation = pool->allocations[pool->next_a];
+void* vstd_object_pool_get(struct vstd_object_pool* pool) {
+    struct vstd_object_pool_memory_allocation* allocation = pool->allocations[pool->next_a];
     void* item = (char*) allocation->items + pool->next_i * pool->row_size;
     bool* used = (bool*) ((char*) item + pool->item_size);
     assert(*used == false);
     *used = true;
 
     for (unsigned long a = pool->next_a; a < pool->allocations_size; a++) {
-        struct object_pool_memory_allocation* allocation = pool->allocations[a];
+        struct vstd_object_pool_memory_allocation* allocation = pool->allocations[a];
         unsigned long min_i = a == pool->next_a ? pool->next_i : 0;
 
         for (unsigned long i = min_i; i < allocation->size; i++) {
@@ -92,7 +92,7 @@ void* get_object_from_pool(struct object_pool* pool) {
     }
 
     for (unsigned long a = 0; a <= pool->next_a; a++) {
-        struct object_pool_memory_allocation* allocation = pool->allocations[a];
+        struct vstd_object_pool_memory_allocation* allocation = pool->allocations[a];
         unsigned long max_i = a == pool->next_a ? pool->next_i : allocation->size;
 
         for (unsigned long i = 0; i < max_i; i++) {
@@ -109,9 +109,9 @@ void* get_object_from_pool(struct object_pool* pool) {
     pool->allocations_size++;
     pool->allocations = realloc(
       pool->allocations,
-      sizeof(struct object_pool_memory_allocation*) * pool->allocations_size
+      sizeof(struct vstd_object_pool_memory_allocation*) * pool->allocations_size
     );
-    pool->allocations[pool->allocations_size - 1] = create_object_pool_memory_allocation(
+    pool->allocations[pool->allocations_size - 1] = vstd_object_pool_memory_alloc(
       pool,
       pool->size
     );
@@ -122,15 +122,15 @@ void* get_object_from_pool(struct object_pool* pool) {
     return item;
 }
 
-void return_object_to_pool(struct object_pool* pool, void* item) {
+void vstd_object_pool_return(struct vstd_object_pool* pool, void* item) {
     bool* used = (bool*) ((char*) item + pool->item_size);
     pool->reset_fn(item);
     *used = false;
 }
 
-void free_object_pool(struct object_pool* pool) {
+void vstd_object_pool_free(struct vstd_object_pool* pool) {
     for (unsigned long i = 0; i < pool->allocations_size; i++) {
-        struct object_pool_memory_allocation* allocation = pool->allocations[i];
+        struct vstd_object_pool_memory_allocation* allocation = pool->allocations[i];
         free(allocation->items);
         free(allocation);
     }
