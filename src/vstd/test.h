@@ -54,6 +54,7 @@
     void vstd_test_##name##_register(void) { vstd_test_register(&vstd_test_##name); }
 
 #define vstd_test_abort(name, block) \
+    void vstd_test_function_##name(void); \
     void vstd_test_function_##name() block \
     struct vstd_test vstd_test_##name = { \
         VSTD_TEST_ABORT, #name, vstd_test_function_##name, 0, 0 \

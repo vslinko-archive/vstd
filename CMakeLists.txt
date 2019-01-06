@@ -18,7 +18,7 @@ target_compile_options(
   vstd-test
   PRIVATE -Wall
   PRIVATE -Wextra
-  PRIVATE -std=c99
+  PRIVATE -std=c11
   PRIVATE -pedantic
   PRIVATE -Wmissing-prototypes
   PRIVATE -Wstrict-prototypes
