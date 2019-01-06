@@ -113,7 +113,6 @@ static void benchmark_test_runner(struct vstd_test *test) {
 
     if (seconds_spend > test->max_time) {
         printf(" FAILED (%fs > %fs)\n", seconds_spend, test->max_time);
-        abort();
     } else {
         printf(" DONE (%fs)\n", seconds_spend);
     }
