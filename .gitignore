@@ -1,4 +1,6 @@
-/build/
-/vstd-gyp.xcodeproj/
-/vstd.xcodeproj/
+/CMakeCache.txt
+/Makefile
+/vstd-test
+/CMakeFiles/
+/cmake_install.cmake
 .DS_Store

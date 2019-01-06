@@ -26,7 +26,7 @@
 #define VSTD_STRING_PREFIX_SIZE (sizeof(size_t) * 3)
 
 #define vstd_string_get_memory(string) \
-    (((void *) string) - VSTD_STRING_PREFIX_SIZE)
+    (((char *) string) - VSTD_STRING_PREFIX_SIZE)
 
 /* String memory structure:
  * |      size_t      |      size_t      |      size_t      |   vstd_string_t  ...

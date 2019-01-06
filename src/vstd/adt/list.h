@@ -33,7 +33,7 @@ struct adt_list {
     int length;
 };
 
-struct adt_list *adt_list_alloc();
+struct adt_list *adt_list_alloc(void);
 
 struct adt_list_item *adt_list_push(struct adt_list *list, void *value);
 

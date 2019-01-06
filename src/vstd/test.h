@@ -26,12 +26,13 @@
 #include <stdlib.h>
 
 #define assert(e) \
-    ((void) ((e) ? 0 : __assert(#e, __FILE__, __LINE__)))
+   ((void) ((e) ? 0 : __assert(#e, __FILE__, __LINE__)))
 
 #define __assert(e, file, line) \
-    ((void) printf(" FAILED\n\t%s:%u: %s\n", file, line, e), abort())
+    (printf(" FAILED\n\t%s:%u: %s\n", file, line, e), abort(), 0)
 
 #define vstd_test_unit(name, run_count, block) \
+    void vstd_test_function_##name(void); \
     void vstd_test_function_##name() { \
         vstd_setup(); \
         block \
@@ -44,6 +45,7 @@
     }
 
 #define vstd_test_benchmark(name, max_time, block) \
+    void vstd_test_function_##name(void); \
     void vstd_test_function_##name() block \
     struct vstd_test vstd_test_##name = {VSTD_TEST_BENCHMARK, #name, vstd_test_function_##name, 0, max_time}; \
     void vstd_test_##name##_register(void) __attribute__((constructor)); \
