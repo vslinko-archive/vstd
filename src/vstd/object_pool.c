@@ -36,8 +36,10 @@ static struct vstd_object_pool_memory_allocation* vstd_object_pool_memory_alloc(
     struct vstd_object_pool_memory_allocation* allocation = malloc(
       sizeof(struct vstd_object_pool_memory_allocation)
     );
+    assert(allocation);
     allocation->size = size;
     allocation->items = malloc(pool->row_size * allocation->size);
+    assert(allocation->items);
 
     for (unsigned long i = 0; i < allocation->size; i++) {
         void* item = (char*) allocation->items + i * pool->row_size;
@@ -55,6 +57,7 @@ struct vstd_object_pool* vstd_object_pool_alloc(
   vstd_object_pool_reset_fn* reset_fn
 ) {
     struct vstd_object_pool* pool = malloc(sizeof(struct vstd_object_pool));
+    assert(pool);
     pool->size = initial_pool_size;
     pool->item_size = item_size;
     pool->row_size = pool->item_size + sizeof(char);
@@ -64,6 +67,7 @@ struct vstd_object_pool* vstd_object_pool_alloc(
 
     pool->allocations_size = 1;
     pool->allocations = malloc(sizeof(struct object_pool_memory_allocation*));
+    assert(pool->allocations);
     pool->allocations[0] = vstd_object_pool_memory_alloc(pool, pool->size);
 
     return pool;
@@ -111,6 +115,7 @@ void* vstd_object_pool_get(struct vstd_object_pool* pool) {
       pool->allocations,
       sizeof(struct vstd_object_pool_memory_allocation*) * pool->allocations_size
     );
+    assert(pool->allocations);
     pool->allocations[pool->allocations_size - 1] = vstd_object_pool_memory_alloc(
       pool,
       pool->size

@@ -30,6 +30,7 @@ static void vstd_setup() {
 
 static void vstd_teardown() {
     vstd_list_free(list);
+    vstd_list_free_object_pool();
 }
 
 vstd_test_unit(vstd_list_alloc, 10000, {

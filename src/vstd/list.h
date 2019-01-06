@@ -39,4 +39,6 @@ struct vstd_list_item* vstd_list_push(struct vstd_list* list, void* value);
 
 void vstd_list_free(struct vstd_list* list);
 
+void vstd_list_free_object_pool(void);
+
 #endif

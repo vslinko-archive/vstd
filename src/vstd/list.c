@@ -20,24 +20,52 @@
  */
 
 #include "list.h"
+#include "object_pool.h"
 
 #include <assert.h>
 #include <stdlib.h>
 
-struct vstd_list* vstd_list_alloc() {
-    struct vstd_list* list = malloc(sizeof(struct vstd_list));
-    assert(list);
+struct vstd_object_pool* list_pool;
+struct vstd_object_pool* list_item_pool;
+
+static void vstd_list_reset(struct vstd_list* list) {
     list->first = NULL;
     list->last = NULL;
     list->length = 0;
-    return list;
+}
+
+static void vstd_list_item_reset(struct vstd_list_item* item) {
+    item->value = NULL;
+    item->next = NULL;
+}
+
+struct vstd_list* vstd_list_alloc() {
+    if (!list_pool) {
+        list_pool = vstd_object_pool_alloc(
+            8,
+            sizeof(struct vstd_list),
+            (vstd_object_pool_reset_fn*) &vstd_list_reset
+        );
+    }
+
+    return vstd_object_pool_get(list_pool);
+}
+
+static struct vstd_list_item* vstd_list_item_alloc() {
+    if (!list_item_pool) {
+        list_item_pool = vstd_object_pool_alloc(
+            8,
+            sizeof(struct vstd_list_item),
+            (vstd_object_pool_reset_fn*) &vstd_list_item_reset
+        );
+    }
+
+    return vstd_object_pool_get(list_pool);
 }
 
 struct vstd_list_item* vstd_list_push(struct vstd_list* list, void* value) {
-    struct vstd_list_item* item = malloc(sizeof(struct vstd_list_item));
-    assert(item);
+    struct vstd_list_item* item = vstd_list_item_alloc();
     item->value = value;
-    item->next = NULL;
 
     if (list->first == NULL) {
         list->first = item;
@@ -53,15 +81,25 @@ struct vstd_list_item* vstd_list_push(struct vstd_list* list, void* value) {
 }
 
 void vstd_list_free(struct vstd_list* list) {
-    if (list->first != NULL) {
-        struct vstd_list_item* item = list->first;
-        struct vstd_list_item* next = NULL;
-        do {
-            next = item->next;
-            free(item);
-            item = next;
-        } while (next != NULL);
+    struct vstd_list_item* item = list->first;
+    struct vstd_list_item* next = NULL;
+    while (item) {
+        next = item->next;
+        vstd_object_pool_return(list_item_pool, item);
+        item = next;
     }
 
-    free(list);
+    vstd_object_pool_return(list_pool, list);
+}
+
+void vstd_list_free_object_pool() {
+    if (list_pool) {
+        vstd_object_pool_free(list_pool);
+        list_pool = NULL;
+    }
+
+    if (list_item_pool) {
+        vstd_object_pool_free(list_item_pool);
+        list_item_pool = NULL;
+    }
 }
