@@ -26,7 +26,7 @@
 #include <stdlib.h>
 
 #define assert(e) \
-   ((void) ((e) ? 0 : __assert(#e, __FILE__, __LINE__)))
+    ((void) ((e) ? 0 : __assert(#e, __FILE__, __LINE__)))
 
 #define __assert(e, file, line) \
     (printf(" FAILED\n\t%s:%u: %s\n", file, line, e), abort(), 0)
@@ -38,47 +38,43 @@
         block \
         vstd_teardown(); \
     } \
-    struct vstd_test vstd_test_##name = {VSTD_TEST_UNIT, #name, vstd_test_function_##name, run_count, 0}; \
+    struct vstd_test vstd_test_##name = { \
+        VSTD_TEST_UNIT, #name, vstd_test_function_##name,  run_count, 0 \
+    }; \
     void vstd_test_##name##_register(void) __attribute__((constructor)); \
-    void vstd_test_##name##_register(void) { \
-        vstd_test_register(&vstd_test_##name); \
-    }
+    void vstd_test_##name##_register(void) { vstd_test_register(&vstd_test_##name); }
 
 #define vstd_test_benchmark(name, max_time, block) \
     void vstd_test_function_##name(void); \
     void vstd_test_function_##name() block \
-    struct vstd_test vstd_test_##name = {VSTD_TEST_BENCHMARK, #name, vstd_test_function_##name, 0, max_time}; \
+    struct vstd_test vstd_test_##name = { \
+        VSTD_TEST_BENCHMARK, #name, vstd_test_function_##name, 0, max_time \
+    }; \
     void vstd_test_##name##_register(void) __attribute__((constructor)); \
-    void vstd_test_##name##_register(void) { \
-        vstd_test_register(&vstd_test_##name); \
-    }
+    void vstd_test_##name##_register(void) { vstd_test_register(&vstd_test_##name); }
 
 #define vstd_test_abort(name, block) \
     void vstd_test_function_##name() block \
-    struct vstd_test vstd_test_##name = {VSTD_TEST_ABORT, #name, vstd_test_function_##name, 0, 0}; \
+    struct vstd_test vstd_test_##name = { \
+        VSTD_TEST_ABORT, #name, vstd_test_function_##name, 0, 0 \
+    }; \
     void vstd_test_##name##_register(void) __attribute__((constructor)); \
-    void vstd_test_##name##_register(void) { \
-        vstd_test_register(&vstd_test_##name); \
-    }
+    void vstd_test_##name##_register(void) { vstd_test_register(&vstd_test_##name); }
 
-enum vstd_test_type {
-    VSTD_TEST_UNIT,
-    VSTD_TEST_BENCHMARK,
-    VSTD_TEST_ABORT
-};
+enum vstd_test_type { VSTD_TEST_UNIT, VSTD_TEST_BENCHMARK, VSTD_TEST_ABORT };
 
 typedef void vstd_test_function(void);
 
 struct vstd_test {
     enum vstd_test_type type;
-    char *name;
-    vstd_test_function *function;
+    char* name;
+    vstd_test_function* function;
     int run_count;
     double max_time;
 };
 
-void vstd_test_register(struct vstd_test *test);
+void vstd_test_register(struct vstd_test* test);
 
-void vstd_test_runner(int argc, char **argv);
+void vstd_test_runner(int argc, char** argv);
 
 #endif

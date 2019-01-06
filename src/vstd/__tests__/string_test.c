@@ -23,9 +23,10 @@
 #include <vstd/test.h>
 
 #define assert_string_memory_size(char_size) \
-    assert(vstd_string_used_memory(string) == (sizeof(size_t) * 3 + sizeof(vstd_string_t) * char_size))
+    assert(vstd_string_used_memory(string) \
+           == (sizeof(size_t) * 3 + sizeof(vstd_string_t) * char_size))
 
-vstd_string_t *string;
+vstd_string_t* string;
 
 static void vstd_setup() {
     string = vstd_string_alloc(2);

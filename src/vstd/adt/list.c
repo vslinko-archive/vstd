@@ -19,12 +19,13 @@
  * THE SOFTWARE.
  */
 
-#include <assert.h>
-#include <stdlib.h>
 #include "list.h"
 
-struct adt_list *adt_list_alloc() {
-    struct adt_list *list = malloc(sizeof(struct adt_list));
+#include <assert.h>
+#include <stdlib.h>
+
+struct adt_list* adt_list_alloc() {
+    struct adt_list* list = malloc(sizeof(struct adt_list));
     assert(list);
     list->first = NULL;
     list->last = NULL;
@@ -32,8 +33,8 @@ struct adt_list *adt_list_alloc() {
     return list;
 }
 
-struct adt_list_item *adt_list_push(struct adt_list *list, void *value) {
-    struct adt_list_item *item = malloc(sizeof(struct adt_list_item));
+struct adt_list_item* adt_list_push(struct adt_list* list, void* value) {
+    struct adt_list_item* item = malloc(sizeof(struct adt_list_item));
     assert(item);
     item->value = value;
     item->next = NULL;
@@ -51,10 +52,10 @@ struct adt_list_item *adt_list_push(struct adt_list *list, void *value) {
     return item;
 }
 
-void adt_list_free(struct adt_list *list) {
+void adt_list_free(struct adt_list* list) {
     if (list->first != NULL) {
-        struct adt_list_item *item = list->first;
-        struct adt_list_item *next = NULL;
+        struct adt_list_item* item = list->first;
+        struct adt_list_item* next = NULL;
         do {
             next = item->next;
             free(item);

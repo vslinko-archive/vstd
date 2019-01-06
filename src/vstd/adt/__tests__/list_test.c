@@ -22,7 +22,7 @@
 #include <vstd/adt/list.h>
 #include <vstd/test.h>
 
-struct adt_list *list;
+struct adt_list* list;
 
 static void vstd_setup() {
     list = adt_list_alloc();
@@ -40,9 +40,9 @@ vstd_test_unit(vstd_adt_list_alloc, 10000, {
 })
 
 vstd_test_unit(vstd_adt_list_push, 10000, {
-    static char *first = "first";
-    static char *second = "second";
-    static char *third = "third";
+    static char* first = "first";
+    static char* second = "second";
+    static char* third = "third";
 
     adt_list_push(list, first);
     assert(list->first != NULL);
@@ -71,7 +71,7 @@ vstd_test_unit(vstd_adt_list_push, 10000, {
 })
 
 vstd_test_benchmark(vstd_atd_list_push_benchmark, 0.15, {
-    struct adt_list *list = adt_list_alloc();
+    struct adt_list* list = adt_list_alloc();
 
     for (int i = 0; i < 1000000; i++) {
         adt_list_push(list, "a");

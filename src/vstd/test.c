@@ -19,19 +19,20 @@
  * THE SOFTWARE.
  */
 
-#include <sys/resource.h>
+#include "test.h"
+
 #include <setjmp.h>
 #include <signal.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/resource.h>
 #include <time.h>
 #include <unistd.h>
-#include "test.h"
 
 struct test_runner_options {
-    char *test_name;
+    char* test_name;
     bool memory_dump;
 };
 
@@ -41,13 +42,13 @@ static struct test_runner_options test_runner_options = {
 };
 
 static int tests_length = 0;
-static struct vstd_test **tests;
+static struct vstd_test** tests;
 
 static jmp_buf env;
 static bool catch_abort = false;
 static int stderr_copy = -1;
 
-static void parse_test_runner_arguments(int argc, char **argv) {
+static void parse_test_runner_arguments(int argc, char** argv) {
     char key = 0;
 
     for (int i = 1; i < argc; i++) {
@@ -64,7 +65,7 @@ static void parse_test_runner_arguments(int argc, char **argv) {
 
 static long get_max_memory_usage() {
     long max_memory_usage;
-    struct rusage *memory = malloc(sizeof(struct rusage));
+    struct rusage* memory = malloc(sizeof(struct rusage));
     assert(memory);
     getrusage(RUSAGE_SELF, memory);
     max_memory_usage = memory->ru_maxrss;
@@ -78,7 +79,7 @@ static void abort_handler(int signo) {
     }
 }
 
-static void unit_test_runner(struct vstd_test *test) {
+static void unit_test_runner(struct vstd_test* test) {
     if (test->run_count == 0) {
         return;
     }
@@ -98,7 +99,7 @@ static void unit_test_runner(struct vstd_test *test) {
     printf(" DONE\n");
 }
 
-static void benchmark_test_runner(struct vstd_test *test) {
+static void benchmark_test_runner(struct vstd_test* test) {
     if (test->max_time == 0) {
         return;
     }
@@ -118,7 +119,7 @@ static void benchmark_test_runner(struct vstd_test *test) {
     }
 }
 
-static void abort_test_runner(struct vstd_test *test) {
+static void abort_test_runner(struct vstd_test* test) {
     printf("Running abort test `%s':", test->name);
 
     if (stderr_copy == -1) {
@@ -147,7 +148,7 @@ static void abort_test_runner(struct vstd_test *test) {
     }
 }
 
-static void test_runner(struct vstd_test *test) {
+static void test_runner(struct vstd_test* test) {
     switch (test->type) {
         case VSTD_TEST_UNIT:
             unit_test_runner(test);
@@ -163,7 +164,7 @@ static void test_runner(struct vstd_test *test) {
     }
 }
 
-static void memory_dump_test_runner(struct vstd_test *test) {
+static void memory_dump_test_runner(struct vstd_test* test) {
     printf("Running memory test `%s':\n", test->name);
 
     /* Run test once to reach max memory usage */
@@ -180,23 +181,23 @@ static void memory_dump_test_runner(struct vstd_test *test) {
     }
 }
 
-void vstd_test_register(struct vstd_test *test) {
+void vstd_test_register(struct vstd_test* test) {
     if (tests_length == 0) {
-        tests = malloc(sizeof(struct test_case *));
+        tests = malloc(sizeof(struct test_case*));
     } else {
-        tests = realloc(tests, sizeof(struct test_case *) * (tests_length + 1));
+        tests = realloc(tests, sizeof(struct test_case*) * (tests_length + 1));
     }
     assert(tests);
 
     tests[tests_length++] = test;
 }
 
-void vstd_test_runner(int argc, char **argv) {
+void vstd_test_runner(int argc, char** argv) {
     signal(SIGABRT, abort_handler);
 
     parse_test_runner_arguments(argc, argv);
 
-    struct vstd_test *test = NULL;
+    struct vstd_test* test = NULL;
 
     if (test_runner_options.test_name != NULL) {
         for (int i = 0; i < tests_length; i++) {

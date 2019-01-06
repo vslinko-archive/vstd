@@ -26,16 +26,16 @@
 
 typedef char vstd_string_t;
 
-vstd_string_t *vstd_string_alloc(size_t chunk_size);
+vstd_string_t* vstd_string_alloc(size_t chunk_size);
 
-size_t vstd_string_length(const vstd_string_t *string);
+size_t vstd_string_length(const vstd_string_t* string);
 
-size_t vstd_string_used_memory(const vstd_string_t *string);
+size_t vstd_string_used_memory(const vstd_string_t* string);
 
-void vstd_string_set(vstd_string_t *string, const char *new_string);
+void vstd_string_set(vstd_string_t* string, const char* new_string);
 
-void vstd_string_append_character(vstd_string_t *string, char character);
+void vstd_string_append_character(vstd_string_t* string, char character);
 
-void vstd_string_free(vstd_string_t *string);
+void vstd_string_free(vstd_string_t* string);
 
 #endif

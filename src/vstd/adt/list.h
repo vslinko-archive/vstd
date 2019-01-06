@@ -23,20 +23,20 @@
 #define VSTD_ADT_LIST_H
 
 struct adt_list_item {
-    void *value;
-    struct adt_list_item *next;
+    void* value;
+    struct adt_list_item* next;
 };
 
 struct adt_list {
-    struct adt_list_item *first;
-    struct adt_list_item *last;
+    struct adt_list_item* first;
+    struct adt_list_item* last;
     int length;
 };
 
-struct adt_list *adt_list_alloc(void);
+struct adt_list* adt_list_alloc(void);
 
-struct adt_list_item *adt_list_push(struct adt_list *list, void *value);
+struct adt_list_item* adt_list_push(struct adt_list* list, void* value);
 
-void adt_list_free(struct adt_list *list);
+void adt_list_free(struct adt_list* list);
 
 #endif
