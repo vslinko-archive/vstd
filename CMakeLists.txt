@@ -27,6 +27,7 @@ target_compile_options(
 
 add_executable(
   vstd-test
+  src/vstd/main_test.c
   src/vstd/__tests__/object_pool_test.c
   src/vstd/object_pool.c
   src/vstd/__tests__/list_test.c
@@ -34,7 +35,6 @@ add_executable(
   src/vstd/__tests__/string_test.c
   src/vstd/string.c
   src/vstd/test.c
-  src/vstd/test_runner.c
 )
 target_compile_options(
   vstd-test
