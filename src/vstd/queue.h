@@ -19,28 +19,23 @@
  * THE SOFTWARE.
  */
 
-#ifndef VSTD_LIST_H
-#define VSTD_LIST_H
+#ifndef VSTD_QUEUE_H
+#define VSTD_QUEUE_H
 
-struct vstd_list_item {
-    void* value;
-    struct vstd_list_item* next;
+#include "list.h"
+
+struct vstd_queue {
+  struct vstd_list* _list;
 };
 
-struct vstd_list {
-    struct vstd_list_item* first;
-    struct vstd_list_item* last;
-    unsigned int length;
-};
+struct vstd_queue* vstd_queue_alloc(void);
 
-struct vstd_list* vstd_list_alloc(void);
+unsigned int vstd_queue_size(struct vstd_queue* queue);
 
-struct vstd_list_item* vstd_list_push(struct vstd_list* list, void* value);
+void vstd_queue_push(struct vstd_queue* queue, void* value);
 
-void* vstd_list_unshift(struct vstd_list* list);
+void* vstd_queue_pop(struct vstd_queue* queue);
 
-void vstd_list_free(struct vstd_list* list);
-
-void vstd_list_free_object_pool(void);
+void vstd_queue_free(struct vstd_queue* queue);
 
 #endif

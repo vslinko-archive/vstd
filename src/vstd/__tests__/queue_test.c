@@ -19,28 +19,53 @@
  * THE SOFTWARE.
  */
 
-#ifndef VSTD_LIST_H
-#define VSTD_LIST_H
+#include <string.h>
+#include <vstd/queue.h>
+#include <vstd/test.h>
 
-struct vstd_list_item {
-    void* value;
-    struct vstd_list_item* next;
-};
+struct vstd_queue* queue;
+static char* first;
+static char* second;
 
-struct vstd_list {
-    struct vstd_list_item* first;
-    struct vstd_list_item* last;
-    unsigned int length;
-};
+static void vstd_setup() {
+  queue = vstd_queue_alloc();
 
-struct vstd_list* vstd_list_alloc(void);
+  first = malloc(sizeof(char) * 6);
+  strcpy(first, "first");
 
-struct vstd_list_item* vstd_list_push(struct vstd_list* list, void* value);
+  second = malloc(sizeof(char) * 7);
+  strcpy(second, "second");
+}
 
-void* vstd_list_unshift(struct vstd_list* list);
+static void vstd_teardown() {
+  vstd_queue_free(queue);
+  free(first);
+  free(second);
+  vstd_list_free_object_pool();
+}
 
-void vstd_list_free(struct vstd_list* list);
+vstd_test_unit(vstd_queue_alloc, 10000, {
+  assert(vstd_queue_size(queue) == 0);
+})
 
-void vstd_list_free_object_pool(void);
+vstd_test_unit(vstd_queue_push, 10000, {
+  vstd_queue_push(queue, first);
+  assert(vstd_queue_size(queue) == 1);
+  vstd_queue_push(queue, second);
+  assert(vstd_queue_size(queue) == 2);
+})
 
-#endif
+vstd_test_unit(vstd_queue_pop, 10000, {
+  char* popped = NULL;
+
+  vstd_queue_push(queue, first);
+  vstd_queue_push(queue, second);
+
+  popped = vstd_queue_pop(queue);
+  assert(popped == first);
+  assert(vstd_queue_size(queue) == 1);
+
+  popped = vstd_queue_pop(queue);
+  assert(popped == second);
+  assert(vstd_queue_size(queue) == 0);
+})

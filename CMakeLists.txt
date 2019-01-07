@@ -6,6 +6,7 @@ add_library(
   vstd
   SHARED
   src/vstd/object_pool.c
+  src/vstd/queue.c
   src/vstd/list.c
   src/vstd/string.c
   src/vstd/test.c
@@ -30,6 +31,8 @@ add_executable(
   src/vstd/main_test.c
   src/vstd/__tests__/object_pool_test.c
   src/vstd/object_pool.c
+  src/vstd/__tests__/queue_test.c
+  src/vstd/queue.c
   src/vstd/__tests__/list_test.c
   src/vstd/list.c
   src/vstd/__tests__/string_test.c

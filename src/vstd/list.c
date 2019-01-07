@@ -67,7 +67,7 @@ struct vstd_list_item* vstd_list_push(struct vstd_list* list, void* value) {
     struct vstd_list_item* item = vstd_list_item_alloc();
     item->value = value;
 
-    if (list->first == NULL) {
+    if (list->length == 0) {
         list->first = item;
         list->last = item;
     } else {
@@ -78,6 +78,27 @@ struct vstd_list_item* vstd_list_push(struct vstd_list* list, void* value) {
     list->length++;
 
     return item;
+}
+
+void* vstd_list_unshift(struct vstd_list* list) {
+    if (list->first == NULL) {
+        return NULL;
+    }
+
+    struct vstd_list_item* item = list->first;
+    void* value = item->value;
+
+    if (list->length == 1) {
+        list->first = NULL;
+        list->last = NULL;
+    } else {
+        list->first = item->next;
+    }
+    list->length--;
+
+    vstd_object_pool_return(list_item_pool, item);
+
+    return value;
 }
 
 void vstd_list_free(struct vstd_list* list) {
