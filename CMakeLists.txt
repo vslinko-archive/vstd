@@ -1,5 +1,30 @@
 cmake_minimum_required(VERSION 3.13)
+
 include_directories(src)
+
+add_library(
+  vstd
+  SHARED
+  src/vstd/object_pool.c
+  src/vstd/list.c
+  src/vstd/string.c
+  src/vstd/test.c
+)
+target_compile_options(
+  vstd
+  PRIVATE -O2
+)
+target_compile_options(
+  vstd
+  PRIVATE -Wall
+  PRIVATE -Wextra
+  PRIVATE -std=c11
+  PRIVATE -pedantic
+  PRIVATE -Wmissing-prototypes
+  PRIVATE -Wstrict-prototypes
+  PRIVATE -Wold-style-definition
+)
+
 add_executable(
   vstd-test
   src/vstd/__tests__/object_pool_test.c
@@ -13,8 +38,7 @@ add_executable(
 )
 target_compile_options(
   vstd-test
-  PRIVATE -g
-  PRIVATE -O0
+  PRIVATE -O2
 )
 target_compile_options(
   vstd-test
