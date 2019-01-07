@@ -63,7 +63,7 @@ static struct vstd_list_item* vstd_list_item_alloc() {
     return vstd_object_pool_get(list_pool);
 }
 
-struct vstd_list_item* vstd_list_push(struct vstd_list* list, void* value) {
+void vstd_list_push(struct vstd_list* list, void* value) {
     struct vstd_list_item* item = vstd_list_item_alloc();
     item->value = value;
 
@@ -76,8 +76,6 @@ struct vstd_list_item* vstd_list_push(struct vstd_list* list, void* value) {
     }
 
     list->length++;
-
-    return item;
 }
 
 void* vstd_list_unshift(struct vstd_list* list) {
