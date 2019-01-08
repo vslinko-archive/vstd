@@ -93,7 +93,7 @@ void *vstd_list_unshift(struct vstd_list *list) {
 
     list->length--;
 
-    vstd_object_pool_return(list_item_pool, item);
+    vstd_object_pool_return(list_item_pool, (void **) &item);
 
     return value;
 }
@@ -105,11 +105,11 @@ void vstd_list_free(struct vstd_list *list) {
 
     while (item) {
         next = item->next;
-        vstd_object_pool_return(list_item_pool, item);
+        vstd_object_pool_return(list_item_pool, (void **) &item);
         item = next;
     }
 
-    vstd_object_pool_return(list_pool, list);
+    vstd_object_pool_return(list_pool, (void **) &list);
 }
 
 void vstd_list_free_object_pool() {

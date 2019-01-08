@@ -47,7 +47,7 @@ struct vstd_object_pool *vstd_object_pool_alloc(unsigned long initial_pool_size,
 
 void *vstd_object_pool_get(struct vstd_object_pool *pool);
 
-void vstd_object_pool_return(struct vstd_object_pool *pool, void *item);
+void vstd_object_pool_return(struct vstd_object_pool *pool, void **item);
 
 void vstd_object_pool_free(struct vstd_object_pool *pool);
 

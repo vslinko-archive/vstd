@@ -48,7 +48,7 @@ static void test_vstd_object_pool_get() {
 
     assert(pool->size == 2);
 
-    vstd_object_pool_return(pool, i);
+    vstd_object_pool_return(pool, (void **) &i);
 }
 VSTD_TEST_REGISTER_UNIT(test_vstd_object_pool_get, 10000, setup, teardown)
 
@@ -58,6 +58,7 @@ static void test_vstd_object_pool_return() {
     i = vstd_object_pool_get(pool);
     *i = 1;
 
-    vstd_object_pool_return(pool, i);
+    vstd_object_pool_return(pool, (void **) &i);
+    assert(i == NULL);
 }
 VSTD_TEST_REGISTER_UNIT(test_vstd_object_pool_return, 10000, setup, teardown)

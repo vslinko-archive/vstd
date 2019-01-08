@@ -122,11 +122,13 @@ void *vstd_object_pool_get(struct vstd_object_pool *pool) {
     return item;
 }
 
-void vstd_object_pool_return(struct vstd_object_pool *pool, void *item) {
+void vstd_object_pool_return(struct vstd_object_pool *pool, void **item) {
     bool *used;
 
-    used = (bool *) ((char *) item + pool->item_size);
+    used = (bool *) ((char *) *item + pool->item_size);
     *used = false;
+
+    *item = NULL;
 }
 
 void vstd_object_pool_free(struct vstd_object_pool *pool) {
