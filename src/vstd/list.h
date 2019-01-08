@@ -23,23 +23,23 @@
 #define VSTD_LIST_H
 
 struct vstd_list_item {
-    void* value;
-    struct vstd_list_item* next;
+    void *value;
+    struct vstd_list_item *next;
 };
 
 struct vstd_list {
-    struct vstd_list_item* first;
-    struct vstd_list_item* last;
+    struct vstd_list_item *first;
+    struct vstd_list_item *last;
     unsigned int length;
 };
 
-struct vstd_list* vstd_list_alloc(void);
+struct vstd_list *vstd_list_alloc(void);
 
-void vstd_list_push(struct vstd_list* list, void* value);
+void vstd_list_push(struct vstd_list *list, void *value);
 
-void* vstd_list_unshift(struct vstd_list* list);
+void *vstd_list_unshift(struct vstd_list *list);
 
-void vstd_list_free(struct vstd_list* list);
+void vstd_list_free(struct vstd_list *list);
 
 void vstd_list_free_object_pool(void);
 

@@ -19,53 +19,55 @@
  * THE SOFTWARE.
  */
 
+#include "../queue.h"
 #include <string.h>
-#include <vstd/queue.h>
-#include <vstd/test.h>
+#include "../test.h"
 
-struct vstd_queue* queue;
-static char* first;
-static char* second;
+static struct vstd_queue *queue;
+static char *first, *second;
 
-static void vstd_setup() {
-  queue = vstd_queue_alloc();
+static void setup() {
+    queue = vstd_queue_alloc();
 
-  first = malloc(sizeof(char) * 6);
-  strcpy(first, "first");
+    first = malloc(sizeof(char) * 6);
+    strcpy(first, "first");
 
-  second = malloc(sizeof(char) * 7);
-  strcpy(second, "second");
+    second = malloc(sizeof(char) * 7);
+    strcpy(second, "second");
 }
 
-static void vstd_teardown() {
-  vstd_queue_free(queue);
-  free(first);
-  free(second);
-  vstd_list_free_object_pool();
+static void teardown() {
+    vstd_queue_free(queue);
+    free(first);
+    free(second);
+    vstd_list_free_object_pool();
 }
 
-vstd_test_unit(vstd_queue_alloc, 10000, {
-  assert(vstd_queue_size(queue) == 0);
-})
+static void test_vstd_queue_alloc() {
+    assert(vstd_queue_size(queue) == 0);
+}
+VSTD_TEST_REGISTER_UNIT(test_vstd_queue_alloc, 10000, setup, teardown)
 
-vstd_test_unit(vstd_queue_push, 10000, {
-  vstd_queue_push(queue, first);
-  assert(vstd_queue_size(queue) == 1);
-  vstd_queue_push(queue, second);
-  assert(vstd_queue_size(queue) == 2);
-})
+static void test_vstd_queue_push() {
+    vstd_queue_push(queue, first);
+    assert(vstd_queue_size(queue) == 1);
+    vstd_queue_push(queue, second);
+    assert(vstd_queue_size(queue) == 2);
+}
+VSTD_TEST_REGISTER_UNIT(test_vstd_queue_push, 10000, setup, teardown)
 
-vstd_test_unit(vstd_queue_pop, 10000, {
-  char* popped = NULL;
+static void test_vstd_queue_pop() {
+    char *popped;
 
-  vstd_queue_push(queue, first);
-  vstd_queue_push(queue, second);
+    vstd_queue_push(queue, first);
+    vstd_queue_push(queue, second);
 
-  popped = vstd_queue_pop(queue);
-  assert(popped == first);
-  assert(vstd_queue_size(queue) == 1);
+    popped = vstd_queue_pop(queue);
+    assert(popped == first);
+    assert(vstd_queue_size(queue) == 1);
 
-  popped = vstd_queue_pop(queue);
-  assert(popped == second);
-  assert(vstd_queue_size(queue) == 0);
-})
+    popped = vstd_queue_pop(queue);
+    assert(popped == second);
+    assert(vstd_queue_size(queue) == 0);
+}
+VSTD_TEST_REGISTER_UNIT(test_vstd_queue_pop, 10000, setup, teardown)

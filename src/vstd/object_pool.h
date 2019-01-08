@@ -24,16 +24,14 @@
 
 #include <stdlib.h>
 
-typedef void vstd_object_pool_reset_fn(void*);
-
 struct vstd_object_pool_memory_allocation {
     unsigned long size;
-    void* items;
+    void *items;
 };
 
 struct vstd_object_pool {
     unsigned long allocations_size;
-    struct vstd_object_pool_memory_allocation** allocations;
+    struct vstd_object_pool_memory_allocation **allocations;
 
     unsigned long size;
 
@@ -42,19 +40,15 @@ struct vstd_object_pool {
 
     size_t item_size;
     size_t row_size;
-    vstd_object_pool_reset_fn* reset_fn;
 };
 
-struct vstd_object_pool* vstd_object_pool_alloc(
-  unsigned long initial_pool_size,
-  size_t item_size,
-  vstd_object_pool_reset_fn* reset_fn
-);
+struct vstd_object_pool *vstd_object_pool_alloc(unsigned long initial_pool_size,
+                                                size_t item_size);
 
-void* vstd_object_pool_get(struct vstd_object_pool* pool);
+void *vstd_object_pool_get(struct vstd_object_pool *pool);
 
-void vstd_object_pool_return(struct vstd_object_pool* pool, void* item);
+void vstd_object_pool_return(struct vstd_object_pool *pool, void *item);
 
-void vstd_object_pool_free(struct vstd_object_pool* pool);
+void vstd_object_pool_free(struct vstd_object_pool *pool);
 
 #endif

@@ -25,17 +25,17 @@
 #include "list.h"
 
 struct vstd_queue {
-  struct vstd_list* _list;
+    struct vstd_list *_list;
 };
 
-struct vstd_queue* vstd_queue_alloc(void);
+struct vstd_queue *vstd_queue_alloc(void);
 
-unsigned int vstd_queue_size(struct vstd_queue* queue);
+unsigned int vstd_queue_size(struct vstd_queue *queue);
 
-void vstd_queue_push(struct vstd_queue* queue, void* value);
+void vstd_queue_push(struct vstd_queue *queue, void *value);
 
-void* vstd_queue_pop(struct vstd_queue* queue);
+void *vstd_queue_pop(struct vstd_queue *queue);
 
-void vstd_queue_free(struct vstd_queue* queue);
+void vstd_queue_free(struct vstd_queue *queue);
 
 #endif

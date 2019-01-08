@@ -19,31 +19,34 @@
  * THE SOFTWARE.
  */
 
-#include <vstd/list.h>
-#include <vstd/test.h>
+#include "../list.h"
+#include "../test.h"
 
-struct vstd_list* list;
+static struct vstd_list *list;
 
-static void vstd_setup() {
+static void setup() {
     list = vstd_list_alloc();
 }
 
-static void vstd_teardown() {
+static void teardown() {
     vstd_list_free(list);
     vstd_list_free_object_pool();
 }
 
-vstd_test_unit(vstd_list_alloc, 10000, {
+static void test_vstd_list_alloc(void) {
     assert(list);
     assert(list->first == NULL);
     assert(list->last == NULL);
     assert(list->length == 0);
-})
+}
+VSTD_TEST_REGISTER_UNIT(test_vstd_list_alloc, 10000, setup, teardown)
 
-vstd_test_unit(vstd_list_push, 10000, {
-    static char* first = "first";
-    static char* second = "second";
-    static char* third = "third";
+static void test_vstd_list_push() {
+    static char *first, *second, *third;
+
+    first = "first";
+    second = "second";
+    third = "third";
 
     vstd_list_push(list, first);
     assert(list->first != NULL);
@@ -69,14 +72,19 @@ vstd_test_unit(vstd_list_push, 10000, {
     assert(list->last->next == NULL);
     assert(list->first->next->next == list->last);
     assert(list->length == 3);
-})
+}
+VSTD_TEST_REGISTER_UNIT(test_vstd_list_push, 10000, setup, teardown)
 
-vstd_test_benchmark(vstd_list_push_benchmark, 0.15, {}, {
-    struct vstd_list* list = vstd_list_alloc();
+static void benchmark_vstd_list_push() {
+    struct vstd_list *list;
+    int i;
 
-    for (int i = 0; i < 1000000; i++) {
+    list = vstd_list_alloc();
+
+    for (i = 0; i < 1000000; i++) {
         vstd_list_push(list, "a");
     }
 
     vstd_list_free(list);
-}, {})
+}
+VSTD_TEST_REGISTER_BENCHMARK(benchmark_vstd_list_push, 0.15, NULL, NULL)

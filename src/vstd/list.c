@@ -19,52 +19,47 @@
  * THE SOFTWARE.
  */
 
-#include "list.h"
-#include "object_pool.h"
-
+#include "./list.h"
 #include <assert.h>
 #include <stdlib.h>
+#include "./object_pool.h"
 
-struct vstd_object_pool* list_pool;
-struct vstd_object_pool* list_item_pool;
+static struct vstd_object_pool *list_pool;
+static struct vstd_object_pool *list_item_pool;
 
-static void vstd_list_reset(struct vstd_list* list) {
+struct vstd_list *vstd_list_alloc() {
+    struct vstd_list *list;
+
+    if (!list_pool) {
+        list_pool = vstd_object_pool_alloc(8, sizeof(struct vstd_list));
+    }
+
+    list = vstd_object_pool_get(list_pool);
     list->first = NULL;
     list->last = NULL;
     list->length = 0;
+
+    return list;
 }
 
-static void vstd_list_item_reset(struct vstd_list_item* item) {
+static struct vstd_list_item *vstd_list_item_alloc() {
+    struct vstd_list_item *item;
+
+    if (!list_item_pool) {
+        list_item_pool = vstd_object_pool_alloc(8, sizeof(struct vstd_list_item));
+    }
+
+    item = vstd_object_pool_get(list_item_pool);
     item->value = NULL;
     item->next = NULL;
+
+    return item;
 }
 
-struct vstd_list* vstd_list_alloc() {
-    if (!list_pool) {
-        list_pool = vstd_object_pool_alloc(
-            8,
-            sizeof(struct vstd_list),
-            (vstd_object_pool_reset_fn*) &vstd_list_reset
-        );
-    }
+void vstd_list_push(struct vstd_list *list, void *value) {
+    struct vstd_list_item *item;
 
-    return vstd_object_pool_get(list_pool);
-}
-
-static struct vstd_list_item* vstd_list_item_alloc() {
-    if (!list_item_pool) {
-        list_item_pool = vstd_object_pool_alloc(
-            8,
-            sizeof(struct vstd_list_item),
-            (vstd_object_pool_reset_fn*) &vstd_list_item_reset
-        );
-    }
-
-    return vstd_object_pool_get(list_pool);
-}
-
-void vstd_list_push(struct vstd_list* list, void* value) {
-    struct vstd_list_item* item = vstd_list_item_alloc();
+    item = vstd_list_item_alloc();
     item->value = value;
 
     if (list->length == 0) {
@@ -78,13 +73,16 @@ void vstd_list_push(struct vstd_list* list, void* value) {
     list->length++;
 }
 
-void* vstd_list_unshift(struct vstd_list* list) {
+void *vstd_list_unshift(struct vstd_list *list) {
+    struct vstd_list_item *item;
+    void *value;
+
     if (list->first == NULL) {
         return NULL;
     }
 
-    struct vstd_list_item* item = list->first;
-    void* value = item->value;
+    item = list->first;
+    value = item->value;
 
     if (list->length == 1) {
         list->first = NULL;
@@ -92,6 +90,7 @@ void* vstd_list_unshift(struct vstd_list* list) {
     } else {
         list->first = item->next;
     }
+
     list->length--;
 
     vstd_object_pool_return(list_item_pool, item);
@@ -99,9 +98,11 @@ void* vstd_list_unshift(struct vstd_list* list) {
     return value;
 }
 
-void vstd_list_free(struct vstd_list* list) {
-    struct vstd_list_item* item = list->first;
-    struct vstd_list_item* next = NULL;
+void vstd_list_free(struct vstd_list *list) {
+    struct vstd_list_item *item, *next;
+
+    item = list->first;
+
     while (item) {
         next = item->next;
         vstd_object_pool_return(list_item_pool, item);

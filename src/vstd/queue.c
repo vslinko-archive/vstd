@@ -19,44 +19,38 @@
  * THE SOFTWARE.
  */
 
-#include "object_pool.h"
-#include "queue.h"
-
+#include "./queue.h"
 #include <stdlib.h>
+#include "./object_pool.h"
 
-static struct vstd_object_pool* queue_pool;
+static struct vstd_object_pool *queue_pool;
 
-static void vstd_queue_reset(struct vstd_queue* queue) {
-  queue->_list = NULL;
+struct vstd_queue *vstd_queue_alloc(void) {
+    struct vstd_queue *queue;
+
+    if (!queue_pool) {
+        queue_pool = vstd_object_pool_alloc(8, sizeof(struct vstd_queue));
+    }
+
+    queue = vstd_object_pool_get(queue_pool);
+    queue->_list = vstd_list_alloc();
+
+    return queue;
 }
 
-struct vstd_queue* vstd_queue_alloc(void) {
-  if (!queue_pool) {
-    queue_pool = vstd_object_pool_alloc(
-      8,
-      sizeof(struct vstd_queue),
-      (vstd_object_pool_reset_fn*) &vstd_queue_reset
-    );
-  }
-
-  struct vstd_queue* queue = vstd_object_pool_get(queue_pool);
-  queue->_list = vstd_list_alloc();
-  return queue;
+unsigned int vstd_queue_size(struct vstd_queue *queue) {
+    return queue->_list->length;
 }
 
-unsigned int vstd_queue_size(struct vstd_queue* queue) {
-  return queue->_list->length;
+void vstd_queue_push(struct vstd_queue *queue, void *value) {
+    vstd_list_push(queue->_list, value);
 }
 
-void vstd_queue_push(struct vstd_queue* queue, void* value) {
-  vstd_list_push(queue->_list, value);
+void *vstd_queue_pop(struct vstd_queue *queue) {
+    return vstd_list_unshift(queue->_list);
 }
 
-void* vstd_queue_pop(struct vstd_queue* queue) {
-  return vstd_list_unshift(queue->_list);
-}
-
-void vstd_queue_free(struct vstd_queue* queue) {
-  vstd_list_free(queue->_list);
-  vstd_object_pool_return(queue_pool, queue);
+void vstd_queue_free(struct vstd_queue *queue) {
+    vstd_list_free(queue->_list);
+    vstd_object_pool_return(queue_pool, queue);
 }

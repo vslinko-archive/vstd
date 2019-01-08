@@ -19,47 +19,45 @@
  * THE SOFTWARE.
  */
 
-#include <vstd/object_pool.h>
-#include <vstd/test.h>
+#include "../object_pool.h"
+#include "../test.h"
 
-struct vstd_object_pool* pool;
+static struct vstd_object_pool *pool;
 
-void reset_int(int* l);
-void reset_int(int* l) {
-  *l = 0;
+static void setup() {
+    pool = vstd_object_pool_alloc(1, sizeof(int));
 }
 
-static void vstd_setup() {
-  pool = vstd_object_pool_alloc(1, sizeof(int), (vstd_object_pool_reset_fn*) &reset_int);
+static void teardown() {
+    vstd_object_pool_free(pool);
 }
 
-static void vstd_teardown() {
-  vstd_object_pool_free(pool);
-}
-
-vstd_test_unit(vstd_object_pool_alloc, 10000, {
+static void test_vstd_object_pool_alloc() {
     assert(pool->allocations_size == 1);
     assert((*pool->allocations)->size == 1);
     assert(pool->size == 1);
     assert(pool->item_size == sizeof(int));
     assert(pool->row_size == sizeof(int) + sizeof(char));
-    assert(pool->reset_fn == (vstd_object_pool_reset_fn*) &reset_int);
-})
+}
+VSTD_TEST_REGISTER_UNIT(test_vstd_object_pool_alloc, 10000, setup, teardown)
 
-vstd_test_unit(vstd_object_pool_get, 10000, {
-    int *i = vstd_object_pool_get(pool);
+static void test_vstd_object_pool_get() {
+    int *i;
+
+    i = vstd_object_pool_get(pool);
 
     assert(pool->size == 2);
-    assert(*i == 0);
 
     vstd_object_pool_return(pool, i);
-})
+}
+VSTD_TEST_REGISTER_UNIT(test_vstd_object_pool_get, 10000, setup, teardown)
 
-vstd_test_unit(vstd_object_pool_return, 10000, {
-    int *i = vstd_object_pool_get(pool);
+static void test_vstd_object_pool_return() {
+    int *i;
+
+    i = vstd_object_pool_get(pool);
     *i = 1;
 
     vstd_object_pool_return(pool, i);
-
-    assert(*i == 0);
-})
+}
+VSTD_TEST_REGISTER_UNIT(test_vstd_object_pool_return, 10000, setup, teardown)

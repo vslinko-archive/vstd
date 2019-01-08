@@ -19,41 +19,44 @@
  * THE SOFTWARE.
  */
 
-#include <vstd/string.h>
-#include <vstd/test.h>
+#include "../string.h"
+#include "../test.h"
 
 #define assert_string_memory_size(char_size) \
     assert(vstd_string_used_memory(string) \
            == (sizeof(size_t) * 3 + sizeof(vstd_string_t) * char_size))
 
-vstd_string_t* string;
+static vstd_string_t *string;
 
-static void vstd_setup() {
+static void setup() {
     string = vstd_string_alloc(2);
 }
 
-static void vstd_teardown() {
+static void teardown() {
     vstd_string_free(string);
 }
 
-vstd_test_unit(vstd_string_alloc, 10000, {
+static void test_vstd_string_alloc() {
     assert(string);
     assert(string[0] == 0);
     assert(string[1] == 0);
     assert(string[2] == 0);
-})
+}
+VSTD_TEST_REGISTER_UNIT(test_vstd_string_alloc, 10000, setup, teardown)
 
-vstd_test_unit(vstd_string_length, 10000, {
+static void test_vstd_string_length() {
     assert(vstd_string_length(string) == 0);
     vstd_string_append_character(string, 1);
     assert(vstd_string_length(string) == 1);
-})
+}
+VSTD_TEST_REGISTER_UNIT(test_vstd_string_length, 10000, setup, teardown)
 
-vstd_test_unit(vstd_string_used_memory, 10000, {
+static void test_vstd_string_used_memory() {
     assert_string_memory_size(3);
-})
+}
+VSTD_TEST_REGISTER_UNIT(test_vstd_string_used_memory, 10000, setup, teardown)
 
-vstd_test_unit(vstd_string_set, 10000, {
+static void test_vstd_string_set() {
     vstd_string_set(string, "a");
     assert(vstd_string_length(string) == 1);
     assert_string_memory_size(3);
@@ -78,9 +81,10 @@ vstd_test_unit(vstd_string_set, 10000, {
     assert(string[2] == 0);
     assert(string[3] == 0);
     assert(string[4] == 0);
-})
+}
+VSTD_TEST_REGISTER_UNIT(test_vstd_string_set, 10000, setup, teardown)
 
-vstd_test_unit(vstd_string_append_character, 10000, {
+static void test_vstd_string_append_character() {
     vstd_string_append_character(string, 1);
     assert(vstd_string_length(string) == 1);
     assert_string_memory_size(3);
@@ -103,4 +107,5 @@ vstd_test_unit(vstd_string_append_character, 10000, {
     assert(string[2] == 3);
     assert(string[3] == 0);
     assert(string[4] == 0);
-})
+}
+VSTD_TEST_REGISTER_UNIT(test_vstd_string_append_character, 10000, setup, teardown)
