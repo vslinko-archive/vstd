@@ -26,6 +26,7 @@ static struct vstd_object_pool *pool;
 
 static void setup() {
     pool = vstd_object_pool_alloc(1, sizeof(int));
+    assert(pool);
 }
 
 static void teardown() {
@@ -45,6 +46,7 @@ static void test_vstd_object_pool_get() {
     int *i;
 
     i = vstd_object_pool_get(pool);
+    assert(i);
 
     assert(pool->size == 2);
 
@@ -56,6 +58,7 @@ static void test_vstd_object_pool_return() {
     int *i;
 
     i = vstd_object_pool_get(pool);
+    assert(i);
     *i = 1;
 
     vstd_object_pool_return(pool, (void **) &i);

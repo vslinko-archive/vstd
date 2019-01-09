@@ -26,6 +26,7 @@ static struct vstd_list *list;
 
 static void setup() {
     list = vstd_list_alloc();
+    assert(list);
 }
 
 static void teardown() {
@@ -48,14 +49,14 @@ static void test_vstd_list_push() {
     second = "second";
     third = "third";
 
-    vstd_list_push(list, first);
+    assert(vstd_list_push(list, first));
     assert(list->first != NULL);
     assert(list->first->value == first);
     assert(list->first->next == NULL);
     assert(list->last == list->first);
     assert(list->length == 1);
 
-    vstd_list_push(list, second);
+    assert(vstd_list_push(list, second));
     assert(list->first != NULL);
     assert(list->first->value == first);
     assert(list->last != NULL);
@@ -64,7 +65,7 @@ static void test_vstd_list_push() {
     assert(list->first->next == list->last);
     assert(list->length == 2);
 
-    vstd_list_push(list, third);
+    assert(vstd_list_push(list, third));
     assert(list->first != NULL);
     assert(list->first->value == first);
     assert(list->last != NULL);
@@ -80,9 +81,10 @@ static void benchmark_vstd_list_push() {
     int i;
 
     list = vstd_list_alloc();
+    assert(list);
 
     for (i = 0; i < 1000000; i++) {
-        vstd_list_push(list, "a");
+        assert(vstd_list_push(list, "a"));
     }
 
     vstd_list_free(list);

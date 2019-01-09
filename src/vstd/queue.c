@@ -30,10 +30,24 @@ struct vstd_queue *vstd_queue_alloc(void) {
 
     if (!queue_pool) {
         queue_pool = vstd_object_pool_alloc(8, sizeof(struct vstd_queue));
+
+        if (!queue_pool) {
+            return NULL;
+        }
     }
 
     queue = vstd_object_pool_get(queue_pool);
+
+    if (!queue) {
+        return NULL;
+    }
+
     queue->_list = vstd_list_alloc();
+
+    if (!queue->_list) {
+        vstd_object_pool_return(queue_pool, (void **) &queue);
+        return NULL;
+    }
 
     return queue;
 }
@@ -42,8 +56,8 @@ unsigned int vstd_queue_size(struct vstd_queue *queue) {
     return queue->_list->length;
 }
 
-void vstd_queue_push(struct vstd_queue *queue, void *value) {
-    vstd_list_push(queue->_list, value);
+bool vstd_queue_push(struct vstd_queue *queue, void *value) {
+    return vstd_list_push(queue->_list, value);
 }
 
 void *vstd_queue_pop(struct vstd_queue *queue) {

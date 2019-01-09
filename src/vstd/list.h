@@ -22,6 +22,8 @@
 #ifndef VSTD_LIST_H
 #define VSTD_LIST_H
 
+#include <stdbool.h>
+
 struct vstd_list_item {
     void *value;
     struct vstd_list_item *next;
@@ -35,7 +37,7 @@ struct vstd_list {
 
 struct vstd_list *vstd_list_alloc(void);
 
-void vstd_list_push(struct vstd_list *list, void *value);
+bool vstd_list_push(struct vstd_list *list, void *value);
 
 void *vstd_list_unshift(struct vstd_list *list);
 

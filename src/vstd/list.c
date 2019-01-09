@@ -20,7 +20,6 @@
  */
 
 #include "./list.h"
-#include <assert.h>
 #include <stdlib.h>
 #include "./object_pool.h"
 
@@ -32,9 +31,18 @@ struct vstd_list *vstd_list_alloc() {
 
     if (!list_pool) {
         list_pool = vstd_object_pool_alloc(8, sizeof(struct vstd_list));
+
+        if (!list_pool) {
+            return NULL;
+        }
     }
 
     list = vstd_object_pool_get(list_pool);
+
+    if (!list) {
+        return NULL;
+    }
+
     list->first = NULL;
     list->last = NULL;
     list->length = 0;
@@ -47,19 +55,33 @@ static struct vstd_list_item *vstd_list_item_alloc() {
 
     if (!list_item_pool) {
         list_item_pool = vstd_object_pool_alloc(8, sizeof(struct vstd_list_item));
+
+        if (!list_item_pool) {
+            return NULL;
+        }
     }
 
     item = vstd_object_pool_get(list_item_pool);
+
+    if (!item) {
+        return NULL;
+    }
+
     item->value = NULL;
     item->next = NULL;
 
     return item;
 }
 
-void vstd_list_push(struct vstd_list *list, void *value) {
+bool vstd_list_push(struct vstd_list *list, void *value) {
     struct vstd_list_item *item;
 
     item = vstd_list_item_alloc();
+
+    if (!item) {
+        return false;
+    }
+
     item->value = value;
 
     if (list->length == 0) {
@@ -71,6 +93,8 @@ void vstd_list_push(struct vstd_list *list, void *value) {
     }
 
     list->length++;
+
+    return true;
 }
 
 void *vstd_list_unshift(struct vstd_list *list) {

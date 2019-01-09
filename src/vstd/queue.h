@@ -22,6 +22,7 @@
 #ifndef VSTD_QUEUE_H
 #define VSTD_QUEUE_H
 
+#include <stdbool.h>
 #include "list.h"
 
 struct vstd_queue {
@@ -32,7 +33,7 @@ struct vstd_queue *vstd_queue_alloc(void);
 
 unsigned int vstd_queue_size(struct vstd_queue *queue);
 
-void vstd_queue_push(struct vstd_queue *queue, void *value);
+bool vstd_queue_push(struct vstd_queue *queue, void *value);
 
 void *vstd_queue_pop(struct vstd_queue *queue);
 

@@ -218,6 +218,7 @@ void vstd_test_register(struct vstd_test *test) {
     if (tests_length == 0) {
         tests = malloc(sizeof(struct test_case *));
     } else {
+        /* cppcheck-suppress memleakOnRealloc */
         tests = realloc(tests, sizeof(struct test_case *) * (tests_length + 1));
     }
     assert(tests);
