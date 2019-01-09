@@ -67,7 +67,7 @@ static long get_max_memory_usage() {
     struct rusage *memory;
 
     memory = malloc(sizeof(struct rusage));
-    assert(memory);
+    tassert(memory);
 
     getrusage(RUSAGE_SELF, memory);
     max_memory_usage = memory->ru_maxrss;
@@ -109,7 +109,7 @@ static void unit_test_runner(struct vstd_test *test) {
 
     for (i = 1; i < test->run_count; i++) {
         execute_test(test);
-        assert(get_max_memory_usage() <= memory_limit);
+        tassert(get_max_memory_usage() <= memory_limit);
     }
 
     printf(" DONE\n");
@@ -221,7 +221,7 @@ void vstd_test_register(struct vstd_test *test) {
         /* cppcheck-suppress memleakOnRealloc */
         tests = realloc(tests, sizeof(struct test_case *) * (tests_length + 1));
     }
-    assert(tests);
+    tassert(tests);
 
     tests[tests_length++] = test;
 }

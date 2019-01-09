@@ -26,7 +26,7 @@ static struct vstd_object_pool *pool;
 
 static void setup() {
     pool = vstd_object_pool_alloc(1, sizeof(int));
-    assert(pool);
+    tassert(pool);
 }
 
 static void teardown() {
@@ -34,11 +34,11 @@ static void teardown() {
 }
 
 static void test_vstd_object_pool_alloc() {
-    assert(pool->allocations_size == 1);
-    assert((*pool->allocations)->size == 1);
-    assert(pool->size == 1);
-    assert(pool->item_size == sizeof(int));
-    assert(pool->row_size == sizeof(int) + sizeof(char));
+    tassert(pool->allocations_size == 1);
+    tassert((*pool->allocations)->size == 1);
+    tassert(pool->size == 1);
+    tassert(pool->item_size == sizeof(int));
+    tassert(pool->row_size == sizeof(int) + sizeof(char));
 }
 VSTD_TEST_REGISTER_UNIT(test_vstd_object_pool_alloc, 10000, setup, teardown)
 
@@ -46,9 +46,9 @@ static void test_vstd_object_pool_get() {
     int *i;
 
     i = vstd_object_pool_get(pool);
-    assert(i);
+    tassert(i);
 
-    assert(pool->size == 2);
+    tassert(pool->size == 2);
 
     vstd_object_pool_return(pool, (void **) &i);
 }
@@ -58,10 +58,10 @@ static void test_vstd_object_pool_return() {
     int *i;
 
     i = vstd_object_pool_get(pool);
-    assert(i);
+    tassert(i);
     *i = 1;
 
     vstd_object_pool_return(pool, (void **) &i);
-    assert(i == NULL);
+    tassert(i == NULL);
 }
 VSTD_TEST_REGISTER_UNIT(test_vstd_object_pool_return, 10000, setup, teardown)

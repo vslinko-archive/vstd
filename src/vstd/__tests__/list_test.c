@@ -26,7 +26,7 @@ static struct vstd_list *list;
 
 static void setup() {
     list = vstd_list_alloc();
-    assert(list);
+    tassert(list);
 }
 
 static void teardown() {
@@ -35,10 +35,10 @@ static void teardown() {
 }
 
 static void test_vstd_list_alloc(void) {
-    assert(list);
-    assert(list->first == NULL);
-    assert(list->last == NULL);
-    assert(list->length == 0);
+    tassert(list);
+    tassert(list->first == NULL);
+    tassert(list->last == NULL);
+    tassert(list->length == 0);
 }
 VSTD_TEST_REGISTER_UNIT(test_vstd_list_alloc, 10000, setup, teardown)
 
@@ -49,44 +49,51 @@ static void test_vstd_list_push() {
     second = "second";
     third = "third";
 
-    assert(vstd_list_push(list, first));
-    assert(list->first != NULL);
-    assert(list->first->value == first);
-    assert(list->first->next == NULL);
-    assert(list->last == list->first);
-    assert(list->length == 1);
+    tassert(vstd_list_push(list, first));
+    tassert(list->first != NULL);
+    tassert(list->first->value == first);
+    tassert(list->first->next == NULL);
+    tassert(list->last == list->first);
+    tassert(list->length == 1);
 
-    assert(vstd_list_push(list, second));
-    assert(list->first != NULL);
-    assert(list->first->value == first);
-    assert(list->last != NULL);
-    assert(list->last->value == second);
-    assert(list->last->next == NULL);
-    assert(list->first->next == list->last);
-    assert(list->length == 2);
+    tassert(vstd_list_push(list, second));
+    tassert(list->first != NULL);
+    tassert(list->first->value == first);
+    tassert(list->last != NULL);
+    tassert(list->last->value == second);
+    tassert(list->last->next == NULL);
+    tassert(list->first->next == list->last);
+    tassert(list->length == 2);
 
-    assert(vstd_list_push(list, third));
-    assert(list->first != NULL);
-    assert(list->first->value == first);
-    assert(list->last != NULL);
-    assert(list->last->value == third);
-    assert(list->last->next == NULL);
-    assert(list->first->next->next == list->last);
-    assert(list->length == 3);
+    tassert(vstd_list_push(list, third));
+    tassert(list->first != NULL);
+    tassert(list->first->value == first);
+    tassert(list->last != NULL);
+    tassert(list->last->value == third);
+    tassert(list->last->next == NULL);
+    tassert(list->first->next->next == list->last);
+    tassert(list->length == 3);
 }
 VSTD_TEST_REGISTER_UNIT(test_vstd_list_push, 10000, setup, teardown)
 
+#define BENCHMARK_VSTD_LIST_PUSH_ITERATIONS 30000000
 static void benchmark_vstd_list_push() {
     struct vstd_list *list;
     int i;
 
     list = vstd_list_alloc();
-    assert(list);
+    tassert(list);
 
-    for (i = 0; i < 1000000; i++) {
-        assert(vstd_list_push(list, "a"));
+    for (i = 0; i < BENCHMARK_VSTD_LIST_PUSH_ITERATIONS; i++) {
+        tassert(vstd_list_push(list, "a"));
     }
+
+    for (i = 0; i < BENCHMARK_VSTD_LIST_PUSH_ITERATIONS; i++) {
+        tassert(vstd_list_unshift(list));
+    }
+
+    tassert(vstd_list_unshift(list) == NULL);
 
     vstd_list_free(list);
 }
-VSTD_TEST_REGISTER_BENCHMARK(benchmark_vstd_list_push, 0.15, NULL, NULL)
+VSTD_TEST_REGISTER_BENCHMARK(benchmark_vstd_list_push, 1.0, NULL, NULL)

@@ -25,10 +25,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define assert(e) \
-    ((void) ((e) ? 0 : __assert(#e, __FILE__, __LINE__)))
+#define tassert(e) \
+    ((void) ((e) ? 0 : __tassert(#e, __FILE__, __LINE__)))
 
-#define __assert(e, file, line) \
+#define __tassert(e, file, line) \
     (printf(" FAILED\n\t%s:%u: %s\n", file, line, e), abort(), 0)
 
 #define VSTD_TEST_REGISTER_UNIT(fn, run_count, setup_fn, teardown_fn) \

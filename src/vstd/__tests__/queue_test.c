@@ -28,14 +28,14 @@ static char *first, *second;
 
 static void setup() {
     queue = vstd_queue_alloc();
-    assert(queue);
+    tassert(queue);
 
     first = malloc(sizeof(char) * 6);
-    assert(first);
+    tassert(first);
     strcpy(first, "first");
 
     second = malloc(sizeof(char) * 7);
-    assert(second);
+    tassert(second);
     strcpy(second, "second");
 }
 
@@ -47,30 +47,30 @@ static void teardown() {
 }
 
 static void test_vstd_queue_alloc() {
-    assert(vstd_queue_size(queue) == 0);
+    tassert(vstd_queue_size(queue) == 0);
 }
 VSTD_TEST_REGISTER_UNIT(test_vstd_queue_alloc, 10000, setup, teardown)
 
 static void test_vstd_queue_push() {
-    assert(vstd_queue_push(queue, first));
-    assert(vstd_queue_size(queue) == 1);
-    assert(vstd_queue_push(queue, second));
-    assert(vstd_queue_size(queue) == 2);
+    tassert(vstd_queue_push(queue, first));
+    tassert(vstd_queue_size(queue) == 1);
+    tassert(vstd_queue_push(queue, second));
+    tassert(vstd_queue_size(queue) == 2);
 }
 VSTD_TEST_REGISTER_UNIT(test_vstd_queue_push, 10000, setup, teardown)
 
 static void test_vstd_queue_pop() {
     char *popped;
 
-    assert(vstd_queue_push(queue, first));
-    assert(vstd_queue_push(queue, second));
+    tassert(vstd_queue_push(queue, first));
+    tassert(vstd_queue_push(queue, second));
 
     popped = vstd_queue_pop(queue);
-    assert(popped == first);
-    assert(vstd_queue_size(queue) == 1);
+    tassert(popped == first);
+    tassert(vstd_queue_size(queue) == 1);
 
     popped = vstd_queue_pop(queue);
-    assert(popped == second);
-    assert(vstd_queue_size(queue) == 0);
+    tassert(popped == second);
+    tassert(vstd_queue_size(queue) == 0);
 }
 VSTD_TEST_REGISTER_UNIT(test_vstd_queue_pop, 10000, setup, teardown)
