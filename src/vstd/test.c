@@ -201,13 +201,13 @@ static void memory_dump_test_runner(struct vstd_test *test) {
     printf("Running memory test `%s':\n", test->name);
 
     /* Run test once to reach max memory usage */
-    test->function();
+    execute_test(test);
 
     start_memory = get_max_memory_usage();
 
     while (true) {
         sleep(1);
-        test->function();
+        execute_test(test);
         current_memory = get_max_memory_usage();
         diff = current_memory / start_memory * 100;
         printf("Maximum memory usage: %.0f %.2f%%\n", current_memory, diff);
