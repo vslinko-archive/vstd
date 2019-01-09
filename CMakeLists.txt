@@ -8,7 +8,6 @@ add_library(
   src/vstd/object_pool.c
   src/vstd/queue.c
   src/vstd/list.c
-  src/vstd/string.c
   src/vstd/test.c
 )
 target_compile_options(
@@ -35,8 +34,6 @@ add_executable(
   src/vstd/queue.c
   src/vstd/__tests__/list_test.c
   src/vstd/list.c
-  src/vstd/__tests__/string_test.c
-  src/vstd/string.c
   src/vstd/test.c
 )
 target_compile_options(
