@@ -36,8 +36,8 @@ static void teardown() {
 
 static void test_vstd_list_alloc(void) {
     tassert(list);
-    tassert(list->first == NULL);
-    tassert(list->last == NULL);
+    tassert(!list->first);
+    tassert(!list->last);
     tassert(list->length == 0);
 }
 VSTD_TEST_REGISTER_UNIT(test_vstd_list_alloc, 10000, setup, teardown)
@@ -50,27 +50,27 @@ static void test_vstd_list_push() {
     third = "third";
 
     tassert(vstd_list_push(list, first));
-    tassert(list->first != NULL);
+    tassert(list->first);
     tassert(list->first->value == first);
-    tassert(list->first->next == NULL);
+    tassert(!list->first->next);
     tassert(list->last == list->first);
     tassert(list->length == 1);
 
     tassert(vstd_list_push(list, second));
-    tassert(list->first != NULL);
+    tassert(list->first);
     tassert(list->first->value == first);
-    tassert(list->last != NULL);
+    tassert(list->last);
     tassert(list->last->value == second);
-    tassert(list->last->next == NULL);
+    tassert(!list->last->next);
     tassert(list->first->next == list->last);
     tassert(list->length == 2);
 
     tassert(vstd_list_push(list, third));
-    tassert(list->first != NULL);
+    tassert(list->first);
     tassert(list->first->value == first);
-    tassert(list->last != NULL);
+    tassert(list->last);
     tassert(list->last->value == third);
-    tassert(list->last->next == NULL);
+    tassert(!list->last->next);
     tassert(list->first->next->next == list->last);
     tassert(list->length == 3);
 }
@@ -92,7 +92,7 @@ static void benchmark_vstd_list_push() {
         tassert(vstd_list_unshift(list));
     }
 
-    tassert(vstd_list_unshift(list) == NULL);
+    tassert(!vstd_list_unshift(list));
 
     vstd_list_free(list);
 }

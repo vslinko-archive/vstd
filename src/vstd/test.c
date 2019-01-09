@@ -236,7 +236,7 @@ void vstd_test_runner(int argc, char **argv) {
 
     parse_test_runner_arguments(argc, argv);
 
-    if (test_runner_options.test_name != NULL) {
+    if (test_runner_options.test_name) {
         for (i = 0; i < tests_length; i++) {
             if (strcmp(tests[i]->name, test_runner_options.test_name) == 0) {
                 test = tests[i];
@@ -244,14 +244,14 @@ void vstd_test_runner(int argc, char **argv) {
             }
         }
 
-        if (test == NULL) {
+        if (!test) {
             fprintf(stderr, "Unknown test \"%s\"\n", test_runner_options.test_name);
             exit(EXIT_FAILURE);
         }
     }
 
     if (test_runner_options.memory_dump) {
-        if (test == NULL) {
+        if (!test) {
             fprintf(stderr, "You should select test for memory test runner\n");
             exit(EXIT_FAILURE);
         }
@@ -259,7 +259,7 @@ void vstd_test_runner(int argc, char **argv) {
         memory_dump_test_runner(test);
     }
 
-    if (test == NULL) {
+    if (!test) {
         for (i = 0; i < tests_length; i++) {
             test_runner(tests[i]);
         }

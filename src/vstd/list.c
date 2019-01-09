@@ -101,7 +101,7 @@ void *vstd_list_unshift(struct vstd_list *list) {
     struct vstd_list_item *item;
     void *value;
 
-    if (list->first == NULL) {
+    if (!list->first) {
         return NULL;
     }
 
