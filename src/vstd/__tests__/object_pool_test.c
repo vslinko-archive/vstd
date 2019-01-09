@@ -50,7 +50,7 @@ static void test_vstd_object_pool_get() {
 
     tassert(pool->size == 2);
 
-    vstd_object_pool_return(pool, (void **) &i);
+    vstd_object_pool_return(pool, i);
 }
 VSTD_TEST_REGISTER_UNIT(test_vstd_object_pool_get, 10000, setup, teardown)
 
@@ -61,7 +61,6 @@ static void test_vstd_object_pool_return() {
     tassert(i);
     *i = 1;
 
-    vstd_object_pool_return(pool, (void **) &i);
-    tassert(!i);
+    vstd_object_pool_return(pool, i);
 }
 VSTD_TEST_REGISTER_UNIT(test_vstd_object_pool_return, 10000, setup, teardown)

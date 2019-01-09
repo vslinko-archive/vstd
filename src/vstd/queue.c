@@ -45,7 +45,7 @@ struct vstd_queue *vstd_queue_alloc(void) {
     queue->_list = vstd_list_alloc();
 
     if (!queue->_list) {
-        vstd_object_pool_return(queue_pool, (void **) &queue);
+        vstd_object_pool_return(queue_pool, queue);
         return NULL;
     }
 
@@ -66,5 +66,5 @@ void *vstd_queue_pop(struct vstd_queue *queue) {
 
 void vstd_queue_free(struct vstd_queue *queue) {
     vstd_list_free(queue->_list);
-    vstd_object_pool_return(queue_pool, (void **) &queue);
+    vstd_object_pool_return(queue_pool, queue);
 }
